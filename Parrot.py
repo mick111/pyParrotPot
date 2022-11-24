@@ -33,6 +33,8 @@ except Exception as e:
 
 
 def get_live_vals(pot: ParrotPot, args):
+    if type(args) != list:
+        args = [args]
     values = {}
     pot.live = True
     for arg in args:
@@ -66,7 +68,7 @@ def get_live_vals(pot: ParrotPot, args):
         if val is not None:
             values[arg] = val
     pot.live = False
-    return values
+    return values.get(args[0]) if len(args) == 1 else values
 
 
 cached = False
@@ -77,36 +79,39 @@ pot.connect()
 all_read_vals = {}
 for arg in sys.argv[1:]:
     if arg == "ALL":
-        new_vals = json.load(open(cache_file_path)) if cached else get_live_vals(pot, ALL)
-
+        new_vals = cached_values if cached else get_live_vals(pot, ALL)
         all_read_vals.update(new_vals)
         if show:
-            print(arg, val)
+            for arg in new_vals.keys():
+                print(arg, new_vals[arg], "(from cache)" if cached else "")
     elif arg == "CACHE":
         # Save in cache all previous read values
-        json.dump(all_read_vals, open(cache_file_path, "w+"))
+        for key in CACHED_ALL:
+            if key in all_read_vals.keys():
+                cached_values[key] = all_read_vals[key]
+        json.dump(cached_values, open(cache_file_path, "w+"))
+        if show:
+            print(f"SAVED IN CACHE: {cached_values}")
     elif arg == "LED":
         pot.led()
     elif arg == "WATER":
         pot.water(10)
-    elif arg == "SHOW":
+    elif arg == "VERBOSE":
         # When this keyword is encountered, all read data is shown
         show = True
     elif arg == "CACHED":
         # When this keyword is encountered, all data are read from cache
         cached = True
     else:
+        val = None
         if cached:
             # Read all cached values
-            read_vals.update(json.load(open(cache_file_path)))
-        else:
-            # Read all values in one LIVE session
-            read_vals.update(get_live_vals(pot, ALL))
-
-    args = ALL if arg ==  else [arg]
-    for arg in args:
-        val = None
-
-
-print(val)
+            val = cached_values.get(arg, None)
+        if val is None:
+            # Read value
+            val = get_live_vals(pot, arg)
+        if show:
+            print(arg, val, "(from cache)" if cached else "")
+        if val is not None:
+            all_read_vals[arg] = val
 pot.disconnect()
