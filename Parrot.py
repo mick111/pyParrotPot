@@ -33,6 +33,8 @@ except Exception as e:
 
 
 def get_live_vals(pot: ParrotPot, args):
+    if not pot.is_connected:
+        pot.connect()
     if type(args) != list:
         args = [args]
     values = {}
@@ -75,7 +77,6 @@ cached = False
 show = False
 val = None
 pot = ParrotPot()
-pot.connect()
 all_read_vals = {}
 for arg in sys.argv[1:]:
     if arg == "ALL":
