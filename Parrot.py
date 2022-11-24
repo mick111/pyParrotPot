@@ -23,7 +23,7 @@ ALL = CACHED_ALL + [
     # "CALIBRATED_EC_POROUS",
 ]
 
-cache_file_path = "/var/www/html/plugins/script/core/ressources/flower_power_cache.json"
+cache_file_path = "/etc/mick111_sensors/flower_power_cache.json"
 try:
     cached_values = json.load(open(cache_file_path, "r+"))
 except Exception as e:
