@@ -18,18 +18,22 @@ CACHED_ALL = [
     "WAT_LVL",
 ]
 ALL = CACHED_ALL + [
-    #"CALIBRATED_EA",
-    #"CALIBRATED_ECB",
-    #"CALIBRATED_EC_POROUS",
+    # "CALIBRATED_EA",
+    # "CALIBRATED_ECB",
+    # "CALIBRATED_EC_POROUS",
 ]
 
 cache_file_path = "/var/www/html/plugins/script/core/ressources/flower_power_cache.json"
 try:
     cached_values = json.load(open(cache_file_path, "r+"))
-    warnings.warn(f"Cached values: {cached_values}")
 except Exception as e:
     warnings.warn(f"Warning during load: {e}")
-    cached_values = {}
+    try:
+        cached_values = json.load(open(cache_file_path, "r"))
+    except Exception as e:
+        warnings.warn(f"Warning during load: {e}")
+        cached_values = {}
+warnings.warn(f"Cached values: {cached_values}")
 
 
 def get_live_vals(pot: ParrotPot, args):
