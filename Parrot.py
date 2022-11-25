@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import json
+import time
 import warnings
 
 from parrot_pot import ParrotPot
@@ -102,6 +103,7 @@ for arg in sys.argv[1:]:
     elif arg == "WATER":
         pot.live = True
         pot.water(0x000A)
+        time.sleep(10)
         pot.live = False
     elif arg == "VERBOSE":
         # When this keyword is encountered, all read data is shown
