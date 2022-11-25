@@ -201,7 +201,7 @@ class ParrotPot:
         if seconds > 20:
             warnings.warn("Watering is limited to 20 seconds")
             seconds = 20
-        self.set_val_int16(Service.Watering, Characteristic.WAT_LVL, seconds)
+        self.set_val_int16(Service.Watering, Characteristic.WAT_CMD, seconds)
 
     def set_val_int8(self, service: Service, characteristic: Characteristic, value: int):
         self.connect_if_needed()
