@@ -118,6 +118,11 @@ class ParrotPot:
         warnings.warn("Connected!")
         return self.is_connected
 
+    def connect_if_needed(self) -> bool:
+        if not self.is_connected:
+            return self.connect()
+        return self.is_connected
+
     @property
     def is_connected(self) -> bool:
         return self.peripheral is not None
@@ -199,16 +204,21 @@ class ParrotPot:
         self.set_val_int16(Service.Watering, Characteristic.WAT_LVL, seconds)
 
     def set_val_int8(self, service: Service, characteristic: Characteristic, value: int):
+        self.connect_if_needed()
         self.peripheral.set_val_int8(service.value, characteristic.value, value)
 
     def set_val_int16(self, service: Service, characteristic: Characteristic, value: int):
+        self.connect_if_needed()
         self.peripheral.set_val_int16(service.value, characteristic.value, value)
 
     def set_val_int32(self, service: Service, characteristic: Characteristic, value: int):
+        self.connect_if_needed()
         self.peripheral.set_val_int32(service.value, characteristic.value, value)
 
     def get_val_f32(self, service: Service, characteristic: Characteristic) -> float:
+        self.connect_if_needed()
         return self.peripheral.get_val_f32(service.value, characteristic.value)
 
     def get_val_int(self, service: Service, characteristic: Characteristic) -> int:
+        self.connect_if_needed()
         return self.peripheral.get_val_int(service.value, characteristic.value)
