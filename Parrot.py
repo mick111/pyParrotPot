@@ -100,7 +100,9 @@ for arg in sys.argv[1:]:
     elif arg == "LED":
         pot.led()
     elif arg == "WATER":
+        pot.live = True
         pot.water(0x000A)
+        pot.live = False
     elif arg == "VERBOSE":
         # When this keyword is encountered, all read data is shown
         show = True
