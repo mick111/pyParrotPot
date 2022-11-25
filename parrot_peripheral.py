@@ -1,4 +1,6 @@
 import struct
+import warnings
+
 from bluepy.btle import Peripheral
 
 
@@ -9,6 +11,7 @@ class ParrotPeripheral(Peripheral):
         ].write(struct.pack("B", value))
 
     def set_val_int16(self, service_uuid: str, characteristic_uuid: str, value: int):
+        warnings.warn(struct.pack("<H", value))
         self.getServiceByUUID(service_uuid).getCharacteristics(characteristic_uuid)[
             0
         ].write(struct.pack("<H", value))
