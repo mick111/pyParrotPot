@@ -4,7 +4,7 @@ import requests
 
 class JeedomPot:
     CMD_ID = {
-        "water_level": 1259,
+        "wat_lvl": 1259,
         "water_request": 1263,
         "sunlight": 1268,
         "soil_ec": 1267,
