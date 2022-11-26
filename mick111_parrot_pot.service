@@ -1,0 +1,13 @@
+[Unit]
+Description=Parrot Pot Poller
+After=multi-user.target
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/mick111_sensors/Parrot.py ALL JEEDOM
+Restart=always
+RestartSec=300s
+
+[Install]
+WantedBy=multi-user.target
