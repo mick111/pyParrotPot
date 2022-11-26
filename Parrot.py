@@ -2,7 +2,7 @@
 import sys
 import json
 import warnings
-
+from jeedom_pot import JeedomPot
 from parrot_pot import ParrotPot
 
 CACHED_ALL = [
@@ -107,6 +107,19 @@ for arg in sys.argv[1:]:
     elif arg == "CACHED":
         # When this keyword is encountered, all data are read from cache
         cached = True
+    elif arg == "JEEDOM":
+        jeedom_json = json.loads(open("/etc/jeedom_creds.json").read())
+        jeedom_host, jeedom_port, jeedom_apikey = (
+            jeedom_json.get("host"),
+            jeedom_json.get("port"),
+            jeedom_json.get("apikey"),
+        )
+        jeedom_pot = JeedomPot(host=jeedom_host, port=jeedom_port, apikey=jeedom_apikey)
+        for key in all_read_vals.keys():
+            try:
+                jeedom_pot.__setattr__(key, all_read_vals[key])
+            except Exception as e:
+                pass
     else:
         val = None
         if cached:
