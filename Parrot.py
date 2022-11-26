@@ -117,7 +117,7 @@ for arg in sys.argv[1:]:
         jeedom_pot = JeedomPot(host=jeedom_host, port=jeedom_port, apikey=jeedom_apikey)
         for key in all_read_vals.keys():
             try:
-                jeedom_pot.__setattr__(key, all_read_vals[key])
+                jeedom_pot.__setattr__(key.lower(), all_read_vals[key])
             except Exception as e:
                 pass
     else:
