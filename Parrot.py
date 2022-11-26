@@ -112,7 +112,7 @@ for arg in sys.argv[1:]:
         jeedom_host, jeedom_port, jeedom_apikey = (
             jeedom_json.get("host"),
             jeedom_json.get("port"),
-            jeedom_json.get("apikey"),
+            jeedom_json.get("parrotpotapikey"),
         )
         jeedom_pot = JeedomPot(host=jeedom_host, port=jeedom_port, apikey=jeedom_apikey)
         for key in all_read_vals.keys():
