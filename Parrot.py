@@ -115,6 +115,9 @@ for arg in sys.argv[1:]:
             jeedom_json.get("parrotpotapikey"),
         )
         jeedom_pot = JeedomPot(host=jeedom_host, port=jeedom_port, apikey=jeedom_apikey)
+        if jeedom_pot.water_request:
+            pot.water(10)
+            jeedom_pot.water_request = 0
         for key in all_read_vals.keys():
             try:
                 jeedom_pot.__setattr__(key.lower(), all_read_vals[key])
