@@ -65,6 +65,7 @@ class ParrotPot:
     def disconnect(self):
         if self.peripheral is not None:
             self.peripheral.disconnect()
+        warnings.warn("Disconnect")
         self.peripheral = None
 
     def connect(self) -> bool:
@@ -73,12 +74,12 @@ class ParrotPot:
         for _ in range(10):
             try:
                 self.peripheral = ParrotPeripheral(self._address)
+                warnings.warn("Connected!")
                 break
             except Exception as e:
                 warnings.warn(str(e))
                 time.sleep(0.5)
                 self.peripheral = None
-        warnings.warn("Connected!")
         return self.is_connected
 
     def connect_if_needed(self) -> bool:
