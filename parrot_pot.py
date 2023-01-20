@@ -71,13 +71,14 @@ class ParrotPot:
     def connect(self) -> bool:
         warnings.warn(f"Connecting {self._address}...")
         self.peripheral = None
-        for _ in range(10):
+        for i in range(10):
             try:
                 self.peripheral = ParrotPeripheral(self._address)
                 warnings.warn("Connected!")
                 break
             except Exception as e:
                 warnings.warn(str(e))
+                print(i, str(e))
                 time.sleep(0.5)
                 self.peripheral = None
         return self.is_connected
