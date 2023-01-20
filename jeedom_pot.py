@@ -43,3 +43,35 @@ class JeedomPot:
             url += f"&type=event&value={value}"
         r = requests.get(url)
         return r.text.strip()
+
+
+if __name__ == "__main__":
+    import json
+
+    jeedom_json = json.loads(
+        open("/Users/mick111/secrets/jeedom_creds.json").read()
+    )
+    jeedom_host, jeedom_port, jeedom_apikey = (
+        jeedom_json["host"],
+        jeedom_json["port"],
+        jeedom_json["parrotpotapikey"],
+    )
+    jeedom = JeedomPot(host=jeedom_host, port=jeedom_port, apikey=jeedom_apikey)
+    print(jeedom.water_level)
+    jeedom.water_level = 15
+    print(jeedom.water_request)
+    jeedom.water_request = 0
+    print(jeedom.sunlight)
+    jeedom.sunlight = 28
+    print(jeedom.soil_ec)
+    jeedom.soil_ec = 19
+    print(jeedom.soil_temperature)
+    jeedom.soil_temperature = 10
+    print(jeedom.soil_moisture)
+    jeedom.soil_moisture = 11
+    print(jeedom.calibrated_soil_moisture)
+    jeedom.calibrated_soil_moisture = 12
+    print(jeedom.calibrated_air_temperature)
+    jeedom.calibrated_air_temperature = 17
+    print(jeedom.calibrated_dli)
+    jeedom.calibrated_dli = 18

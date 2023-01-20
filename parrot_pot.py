@@ -1,8 +1,8 @@
 import time
 import warnings
 from typing import Optional
-from enum import Enum
 from parrot_peripheral import ParrotPeripheral
+from parrot_uuid import Service, Characteristic
 
 
 class Convert:
@@ -56,43 +56,6 @@ class Convert:
         return min(max(0.0, soil_moisture), 100.0)
 
 
-class Service(str, Enum):
-    """Services UUIDs"""
-
-    Live = "39e1FA00-84a8-11e2-afba-0002a5d5c51b"
-    Clock = "39e1FD00-84a8-11e2-afba-0002a5d5c51b"
-    Watering = "39e1f900-84a8-11e2-afba-0002a5d5c51b"
-
-
-class Characteristic(str, Enum):
-    """Characteristic UUIDs"""
-
-    # In Live Service
-    NOTIFICATIONS_TIMER = "39E1fa06-84a8-11e2-afba-0002a5d5c51b"
-
-    SUNLIGHT = "39e1fa01-84a8-11e2-afba-0002a5d5c51b"
-    SOIL_EC = "39e1fa02-84a8-11e2-afba-0002a5d5c51b"
-    SOIL_TEMPERATURE = "39e1fa03-84a8-11e2-afba-0002a5d5c51b"
-    AIR_TEMPERATURE = "39e1fa04-84a8-11e2-afba-0002a5d5c51b"
-    SOIL_MOISTURE = "39e1fa05-84a8-11e2-afba-0002a5d5c51b"
-
-    LED = "39e1fa07-84a8-11e2-afba-0002a5d5c51b"
-
-    CALIBRATED_SOIL_MOISTURE = "39e1fa09-84a8-11e2-afba-0002a5d5c51b"
-    CALIBRATED_AIR_TEMPERATURE = "39e1fa0a-84a8-11e2-afba-0002a5d5c51b"
-    CALIBRATED_DLI = "39e1fa0b-84a8-11e2-afba-0002a5d5c51b"
-    CALIBRATED_EA = "39e1fa0c-84a8-11e2-afba-0002a5d5c51b"
-    CALIBRATED_ECB = "39e1fa0d-84a8-11e2-afba-0002a5d5c51b"
-    CALIBRATED_EC_POROUS = "39e1fa0e-84a8-11e2-afba-0002a5d5c51b"
-
-    # In Clock Service
-    CURRENT_TIME = "39e1fd01-84a8-11e2-afba-0002a5d5c51b"
-
-    # In Watering Service
-    WAT_CMD = "39e1f906-84a8-11e2-afba-0002a5d5c51b"
-    WAT_LVL = "39e1f907-84a8-11e2-afba-0002a5d5c51b"
-
-
 class ParrotPot:
     def __init__(self, address="a0:14:3d:cd:c4:61"):
         self.peripheral: Optional[ParrotPeripheral] = None
@@ -133,85 +96,91 @@ class ParrotPot:
 
     @live.setter
     def live(self, value: bool):
-        self.set_val_int8(Service.Live, Characteristic.NOTIFICATIONS_TIMER, value)
+        self.set_val_int8(Service.Live, Characteristic.notifications_timer, value)
         self._is_live = value
 
     @property
     def current_time(self) -> int:
-        return self.get_val_int(Service.Clock, Characteristic.CURRENT_TIME)
+        return self.get_val_int(Service.Clock, Characteristic.time_start)
 
     @property
     def air_temperature(self) -> float:
-        val = self.get_val_int(Service.Live, Characteristic.AIR_TEMPERATURE)
+        val = self.get_val_int(Service.Live, Characteristic.air_temperature)
         return Convert.temperature(val)
 
     @property
     def soil_temperature(self) -> float:
-        val = self.get_val_int(Service.Live, Characteristic.SOIL_TEMPERATURE)
+        val = self.get_val_int(Service.Live, Characteristic.soil_temperature)
         return Convert.temperature(val)
 
     @property
     def soil_electrical_conductivity(self) -> float:
-        val = self.get_val_int(Service.Live, Characteristic.SOIL_EC)
+        val = self.get_val_int(Service.Live, Characteristic.soil_ec)
         return Convert.soil_electrical_conductivity(val)
 
     @property
     def soil_moisture(self) -> float:
-        val = self.get_val_int(Service.Live, Characteristic.SOIL_MOISTURE)
+        val = self.get_val_int(Service.Live, Characteristic.soil_moisture)
         return Convert.soil_moisture(val)
 
     @property
     def sunlight(self) -> float:
-        val = self.get_val_int(Service.Live, Characteristic.SUNLIGHT)
+        val = self.get_val_int(Service.Live, Characteristic.sunlight)
         return Convert.sunlight(val)
 
     @property
     def calibrated_dli(self) -> float:
-        return 1e3 * self.get_val_f32(Service.Live, Characteristic.CALIBRATED_DLI)
+        return 1e3 * self.get_val_f32(Service.Live, Characteristic.calibrated_dli)
 
     @property
     def calibrated_soil_moisture(self) -> float:
-        return self.get_val_f32(Service.Live, Characteristic.CALIBRATED_SOIL_MOISTURE)
+        return self.get_val_f32(Service.Live, Characteristic.calibrated_soil_moisture)
 
     @property
     def calibrated_air_temperature(self) -> float:
-        return self.get_val_f32(Service.Live, Characteristic.CALIBRATED_AIR_TEMPERATURE)
+        return self.get_val_f32(Service.Live, Characteristic.calibrated_air_temperature)
 
     @property
     def calibrated_ea(self) -> float:
-        return self.get_val_f32(Service.Live, Characteristic.CALIBRATED_EA)
+        return self.get_val_f32(Service.Live, Characteristic.calibrated_ea)
 
     @property
     def calibrated_ecb(self) -> float:
-        return self.get_val_f32(Service.Live, Characteristic.CALIBRATED_ECB)
+        return self.get_val_f32(Service.Live, Characteristic.calibrated_ecb)
 
     @property
     def calibrated_ec_porous(self) -> float:
-        return self.get_val_f32(Service.Live, Characteristic.CALIBRATED_EC_POROUS)
+        return self.get_val_f32(Service.Live, Characteristic.calibrated_ec_porous)
 
     @property
     def water_level(self) -> float:
-        val = self.get_val_int(Service.Watering, Characteristic.WAT_LVL)
+        val = self.get_val_int(Service.Watering, Characteristic.wat_lvl)
         return Convert.water_level(val)
 
     def led(self, state=1):
-        self.set_val_int8(Service.Live, Characteristic.LED, state)
+        self.set_val_int8(Service.Live, Characteristic.led, state)
 
     def water(self, seconds: int):
         if seconds > 20:
             warnings.warn("Watering is limited to 20 seconds")
             seconds = 20
-        self.set_val_int16(Service.Watering, Characteristic.WAT_CMD, seconds)
+        self.set_val_int16(Service.Watering, Characteristic.wat_cmd, seconds)
 
-    def set_val_int8(self, service: Service, characteristic: Characteristic, value: int):
+    def set_val_int8(
+        self, service: Service, characteristic: Characteristic, value: int
+    ):
         self.connect_if_needed()
         self.peripheral.set_val_int8(service.value, characteristic.value, value)
 
-    def set_val_int16(self, service: Service, characteristic: Characteristic, value: int):
+    def set_val_int16(
+        self, service: Service, characteristic: Characteristic, value: int
+    ):
         self.connect_if_needed()
         self.peripheral.set_val_int16(service.value, characteristic.value, value)
 
-    def set_val_int32(self, service: Service, characteristic: Characteristic, value: int):
+    def set_val_int32(
+        self, service: Service, characteristic: Characteristic, value: int
+    ):
         self.connect_if_needed()
         self.peripheral.set_val_int32(service.value, characteristic.value, value)
 
